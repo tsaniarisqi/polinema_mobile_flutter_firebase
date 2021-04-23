@@ -1,17 +1,15 @@
 import 'package:firebase/auth.dart';
+import 'package:firebase/login_page.dart';
 import 'package:firebase/profile_page.dart';
-import 'package:firebase/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase/sign_in.dart';
-import 'package:firebase/first_screen.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -20,10 +18,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: Text("Firebase"),
-      // ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: SafeArea(
@@ -33,9 +27,7 @@ class _LoginPageState extends State<LoginPage> {
                 delegate: SliverChildListDelegate([
                   _showTitle(),
                   _form(),
-                  _loginButton(),
-                  _showText(),
-                  _signInButton(),
+                  _registerButton(),
                 ]),
               ),
               SliverFillRemaining(
@@ -47,17 +39,17 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        "Don’t have account ?",
+                        "Already have account ?",
                       ),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RegisterPage()));
+                                  builder: (context) => LoginPage()));
                         },
                         child: Text(
-                          "Register here",
+                          "Login here",
                           style: TextStyle(fontWeight: FontWeight.w700),
                         ),
                       ),
@@ -72,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Widget untuk menampilkan title
+  // untuk menampilkan title
   Widget _showTitle() {
     return Padding(
       padding: EdgeInsets.only(top: 40),
@@ -93,15 +85,13 @@ class _LoginPageState extends State<LoginPage> {
               Expanded(
                 child: Divider(
                   thickness: 3,
-                  // color: Colors.white,
                 ),
               ),
               SizedBox(width: 40),
             ],
           ),
-          // Tulisan Welcome back
           Text(
-            "Welcome back",
+            "Register First",
             style: TextStyle(
                 fontWeight: FontWeight.w300, fontSize: 36, letterSpacing: 5),
           ),
@@ -161,22 +151,22 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Button untuk login dengan email dan password
-  Widget _loginButton() {
+  // Button untuk register
+  Widget _registerButton() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 30),
       width: double.infinity,
       child: RaisedButton(
         onPressed: () {
           authHandler
-              .handleSignInEmail(emailController.text, passwordController.text)
+              .handleSignUp(emailController.text, passwordController.text)
               .then((User user) {
             Navigator.push(context,
                 new MaterialPageRoute(builder: (context) => new ProfilePage()));
           }).catchError((e) => print(e));
         },
         child: Text(
-          "Login",
+          "Register",
           style: TextStyle(fontSize: 15, color: Colors.white),
         ),
         shape: RoundedRectangleBorder(
@@ -188,136 +178,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  // menampilkan text OR
-  Widget _showText() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Divider(
-            thickness: 1,
-          ),
-        ),
-        SizedBox(width: 20),
-        Text(
-          "OR",
-          // style: TextStyle(color: Colors.white),
-        ),
-        SizedBox(width: 20),
-        Expanded(
-          child: Divider(
-            thickness: 1,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Button untuk signIn dengan account google
-  Widget _signInButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30),
-      child: OutlineButton(
-        splashColor: Colors.grey,
-        onPressed: () {
-          signInWithGoogle().then((result) {
-            if (result != null) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return FirstScreen();
-                  },
-                ),
-              );
-            }
-          });
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        highlightElevation: 0,
-        borderSide: BorderSide(color: Colors.grey),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                  image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png'),
-                  height: 20.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Container(
-  //       color: Colors.white,
-  //       child: Center(
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.max,
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: <Widget>[
-  //             FlutterLogo(size: 150),
-  //             SizedBox(height: 50),
-  //             _signInButton(),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-  // Widget _signInButton() {
-  //   return OutlineButton(
-  //     splashColor: Colors.grey,
-  //     onPressed: () {
-  //       signInWithGoogle().then((result) {
-  //         if (result != null) {
-  //           Navigator.of(context).push(
-  //             MaterialPageRoute(
-  //               builder: (context) {
-  //                 return FirstScreen();
-  //               },
-  //             ),
-  //           );
-  //         }
-  //       });
-  //     },
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-  //     highlightElevation: 0,
-  //     borderSide: BorderSide(color: Colors.grey),
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-  //       child: Row(
-  //         mainAxisSize: MainAxisSize.min,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: <Widget>[
-  //           Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
-  //           Padding(
-  //             padding: const EdgeInsets.only(left: 10),
-  //             child: Text(
-  //               'Sign in with Google',
-  //               style: TextStyle(
-  //                 fontSize: 20,
-  //                 color: Colors.grey,
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

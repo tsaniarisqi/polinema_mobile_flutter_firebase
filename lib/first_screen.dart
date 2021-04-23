@@ -7,76 +7,104 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Colors.blue[100], Colors.blue[400]],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  imageUrl,
-                ),
-                radius: 60,
-                backgroundColor: Colors.transparent,
-              ),
-              SizedBox(height: 40),
-              Text(
-                'NAME',
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-              Text(
-                name,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              Text(
-                'EMAIL',
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-              Text(
-                email,
-                style: TextStyle(
-                    fontSize: 25,
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 40),
-              RaisedButton(
-                onPressed: () {
-                  signOutGoogle();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) {
-                    return LoginPage();
-                  }), ModalRoute.withName('/'));
-                },
-                color: Colors.deepPurple,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Sign Out',
-                    style: TextStyle(fontSize: 25, color: Colors.white),
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: SafeArea(
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              "Hello",
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: Divider(
+                                thickness: 3,
+                                // color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 40),
+                          ],
+                        ),
+                        Text(
+                          "Profile",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 36,
+                              letterSpacing: 5),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40)),
-              )
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Name",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  // menampilkan nama dan image
+                  Card(
+                      child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        imageUrl,
+                      ),
+                    ),
+                    title: Text(name),
+                  )),
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Email",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  // menampilkan email
+                  Card(
+                      child: ListTile(
+                    leading: CircleAvatar(
+                      child: Icon(Icons.email_outlined),
+                    ),
+                    title: Text(email),
+                  )),
+                  //signOutButton
+                  Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: RaisedButton(
+                      onPressed: () {
+                        signOutGoogle();
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) {
+                          return LoginPage();
+                        }), ModalRoute.withName('/'));
+                      },
+                      child: Text(
+                        "LogOut",
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      color: Color(0xFF4f4f4f),
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  )
+                ]),
+              ),
             ],
           ),
         ),

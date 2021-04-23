@@ -1,4 +1,3 @@
-import 'package:firebase/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase/login_page.dart';
@@ -10,7 +9,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var authHandler = new Auth();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-                  // menampilkan email 
+                  // menampilkan email
                   Card(
                       child: ListTile(
                     leading: CircleAvatar(
@@ -76,7 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: EdgeInsets.only(top: 20),
                     child: RaisedButton(
                       onPressed: () async {
-                        await authHandler.signOut();
                         Navigator.push(
                             context,
                             new MaterialPageRoute(

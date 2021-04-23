@@ -1,7 +1,7 @@
-import 'package:firebase/auth.dart';
 import 'package:firebase/profile_page.dart';
 import 'package:firebase/register_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase/signInSignUpResult.dart';
+import 'package:firebase/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase/sign_in.dart';
 import 'package:firebase/first_screen.dart';
@@ -15,7 +15,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  var authHandler = new Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -167,13 +166,35 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(vertical: 30),
       width: double.infinity,
       child: RaisedButton(
-        onPressed: () {
-          authHandler
-              .handleSignInEmail(emailController.text, passwordController.text)
-              .then((User user) {
-            Navigator.push(context,
-                new MaterialPageRoute(builder: (context) => new ProfilePage()));
-          }).catchError((e) => print(e));
+        onPressed: () async {
+          SignInSignUpResult result = await AuthService.signInWithEmail(
+              email: emailController.text, pass: passwordController.text);
+          if (result.user != null) {
+            // Go to Profile Page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(),
+              ),
+            );
+          } else {
+            // Show Dialog
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Error"),
+                content: Text(result.message),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("OK"),
+                  )
+                ],
+              ),
+            );
+          }
         },
         child: Text(
           "Login",
@@ -260,64 +281,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: Container(
-  //       color: Colors.white,
-  //       child: Center(
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.max,
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: <Widget>[
-  //             FlutterLogo(size: 150),
-  //             SizedBox(height: 50),
-  //             _signInButton(),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-  // Widget _signInButton() {
-  //   return OutlineButton(
-  //     splashColor: Colors.grey,
-  //     onPressed: () {
-  //       signInWithGoogle().then((result) {
-  //         if (result != null) {
-  //           Navigator.of(context).push(
-  //             MaterialPageRoute(
-  //               builder: (context) {
-  //                 return FirstScreen();
-  //               },
-  //             ),
-  //           );
-  //         }
-  //       });
-  //     },
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-  //     highlightElevation: 0,
-  //     borderSide: BorderSide(color: Colors.grey),
-  //     child: Padding(
-  //       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-  //       child: Row(
-  //         mainAxisSize: MainAxisSize.min,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: <Widget>[
-  //           Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
-  //           Padding(
-  //             padding: const EdgeInsets.only(left: 10),
-  //             child: Text(
-  //               'Sign in with Google',
-  //               style: TextStyle(
-  //                 fontSize: 20,
-  //                 color: Colors.grey,
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

@@ -1,7 +1,7 @@
-import 'package:firebase/auth.dart';
 import 'package:firebase/login_page.dart';
 import 'package:firebase/profile_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase/signInSignUpResult.dart';
+import 'package:firebase/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -13,7 +13,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  var authHandler = new Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -157,13 +156,35 @@ class _RegisterPageState extends State<RegisterPage> {
       padding: EdgeInsets.symmetric(vertical: 30),
       width: double.infinity,
       child: RaisedButton(
-        onPressed: () {
-          authHandler
-              .handleSignUp(emailController.text, passwordController.text)
-              .then((User user) {
-            Navigator.push(context,
-                new MaterialPageRoute(builder: (context) => new ProfilePage()));
-          }).catchError((e) => print(e));
+        onPressed: () async {
+          SignInSignUpResult result = await AuthService.createUser(
+              email: emailController.text, pass: passwordController.text);
+          if (result.user != null) {
+            // Go to Profile Page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(),
+              ),
+            );
+          } else {
+            // Show Dialog
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Error"),
+                content: Text(result.message),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("OK"),
+                  )
+                ],
+              ),
+            );
+          }
         },
         child: Text(
           "Register",
